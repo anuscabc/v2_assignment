@@ -95,7 +95,7 @@ class Market_Data:
 
         # 2. The random coefficients on all other product characteristics: 
 
-        self.beta_0 = np.random.normal(2, -2, (self.n_chars, 1))
+        self.beta_0 = np.random.normal(2, 1, (self.n_chars, 1))
 
 
     
@@ -116,7 +116,7 @@ class Market_Data:
             _type_: vector (n_firms) mean indirect utilities vector
         """
         price_r = self.prices[t:t+self.T]
-        mean_indirect_utilities = self.produc_chars@self.beta_0 + self.alpha_0*price_r + self.xi[t:t+self.T]
+        mean_indirect_utilities = self.produc_chars@self.beta_0 + self.alpha_0*price_r + self.xi[t*self.T:t*self.T+self.T]
         return mean_indirect_utilities
     
 
