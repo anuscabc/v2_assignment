@@ -96,6 +96,12 @@ class Market_Data:
         # 2. The random coefficients on all other product characteristics: 
 
         self.beta_0 = np.random.normal(2, 1, (self.n_chars, 1))
+        self.beta_sd = np.random.gumbel(0, 0.04, (self.n_chars, 1))
+
+        # 3. Generating the random shocks for the model -> might be better that they generate in module rather than as function attribute if they do not need to write t
+        # themselves the code 
+        self.v_p = np.random.normal(0, 1, (self.n_consumers, 1))
+
 
 
     
@@ -120,6 +126,18 @@ class Market_Data:
         return mean_indirect_utilities
     
 
+    
+    
+    def get_random_coefficients(self, t): 
+        price_r = np.repeat(self.prices[t:t+self.T].reshape(self.n_consumers, 1), self.T, axis=0)
+        alpha_i = np.reshape((-(np.exp(self.alpha_mean+ self.alpha_sd*self.v_p))+np.exp(self.alpha_mean + (self.alpha_sd)**2/2)), (self.n_consumers, 1))
+
+
+        random_price = 
+
+        return random_coeff_price
+    
+
 
     def gen_mean_utilities_all_probs_market_shares(self, t): 
         """Function that generates mean utilities on which to perform the estimation"""
@@ -134,7 +152,7 @@ class Market_Data:
         alpha_i = np.reshape((-(np.exp(self.mu + self.sigma*v_p))+np.exp(self.mu + (self.sigma)**2/2)), (self.n_consumers, 1))
         random_coeff = np.ravel((alpha_i*price_r).T)
 
-        u = mean_indirect_utlity_for_utility + random_coeff + e
+        u = mean_indirect_utlity_for_utility + random_coeff
         u_r = np.reshape(u, (self.n_firms, self.n_consumers))
         sum_u = np.sum(np.exp(u_r), axis =0)
 
