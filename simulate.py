@@ -100,16 +100,13 @@ class Market_Data:
 
         # 3. Generating the random shocks for the model -> might be better that they generate in module rather than as function attribute if they do not need to write t
         # themselves the code 
-        self.v_p = np.random.normal(0, 1, (self.n_consumers, 1))
+        self.v_p = np.random.normal(0, 1, (self.n_consumers*self.T, 1))
 
 
 
     
         # Getting all the mean indirect utilities: 
-
-
-
-
+        self.random_coeff_price = np.zeros(self.n_consumers*self.n_firms, 1)
 
 
     def gen_mean_indirect_utilities(self, t): 
@@ -121,45 +118,48 @@ class Market_Data:
         Returns:
             _type_: vector (n_firms) mean indirect utilities vector
         """
-        price_r = self.prices[t:t+self.T]
-        mean_indirect_utilities = self.produc_chars@self.beta_0 + self.alpha_0*price_r + self.xi[t*self.T:t*self.T+self.T]
+        price_r = self.prices[t*self.n_firms:self.n_firms+t*self.n_firms]
+        mean_indirect_utilities = self.produc_chars@self.beta_0 + self.alpha_0*price_r + self.xi[t*self.n_firms:t*self.n_firms+self.n_firms]
         return mean_indirect_utilities
     
 
     
     
     def get_random_coefficients(self, t): 
-        price_r = np.repeat(self.prices[t:t+self.T].reshape(self.n_consumers, 1), self.T, axis=0)
-        alpha_i = np.reshape((-(np.exp(self.alpha_mean+ self.alpha_sd*self.v_p))+np.exp(self.alpha_mean + (self.alpha_sd)**2/2)), (self.n_consumers, 1))
 
+        price_r = self.prices[t*self.n_firms:self.n_firms+t*self.n_firms].reshape(1, self.n_firms)
 
-        random_price = 
+        # This now gives the correct value per period 
+        period_v_p = self.v_p[t*self.n_consumers:self.n_consumers+ t*self.n_consumers]
+        alpha_i = np.reshape((-(np.exp(self.alpha_mean+ self.alpha_sd*period_v_p))+np.exp(self.alpha_mean + (self.alpha_sd)**2/2)), (self.n_consumers, 1))
+
+        random_coeff_price = np.ravel((alpha_i*price_r).T)
 
         return random_coeff_price
     
 
 
-    def gen_mean_utilities_all_probs_market_shares(self, t): 
-        """Function that generates mean utilities on which to perform the estimation"""
-        # Fill in the mean indirect utility vector 
-        price_r = np.reshape(self.prices[t:t+self.T], (1, self.n_firms))
-        # alpha_0 = -np.exp(self.mu + (self.sigma)**2/2)
+    # def gen_mean_utilities_all_probs_market_shares(self, t): 
+    #     """Function that generates mean utilities on which to perform the estimation"""
+    #     # Fill in the mean indirect utility vector 
+    #     price_r = np.reshape(self.prices[t:t+self.T], (1, self.n_firms))
+    #     # alpha_0 = -np.exp(self.mu + (self.sigma)**2/2)
 
-        # beta = np.array([self.beta1, self.beta2, self.beta3])
-        mean_indirect_utility = self.produc_chars@beta + alpha_0*(price)
-        mean_indirect_utlity_for_utility = np.repeat(mean_indirect_utility, self.n_consumers, axis=0)
+    #     # beta = np.array([self.beta1, self.beta2, self.beta3])
+    #     mean_indirect_utility = self.produc_chars@beta + alpha_0*(price)
+    #     mean_indirect_utlity_for_utility = np.repeat(mean_indirect_utility, self.n_consumers, axis=0)
 
-        alpha_i = np.reshape((-(np.exp(self.mu + self.sigma*v_p))+np.exp(self.mu + (self.sigma)**2/2)), (self.n_consumers, 1))
-        random_coeff = np.ravel((alpha_i*price_r).T)
+    #     alpha_i = np.reshape((-(np.exp(self.mu + self.sigma*v_p))+np.exp(self.mu + (self.sigma)**2/2)), (self.n_consumers, 1))
+    #     random_coeff = np.ravel((alpha_i*price_r).T)
 
-        u = mean_indirect_utlity_for_utility + random_coeff
-        u_r = np.reshape(u, (self.n_firms, self.n_consumers))
-        sum_u = np.sum(np.exp(u_r), axis =0)
+    #     u = mean_indirect_utlity_for_utility + random_coeff
+    #     u_r = np.reshape(u, (self.n_firms, self.n_consumers))
+    #     sum_u = np.sum(np.exp(u_r), axis =0)
 
-        all_probs = np.exp(u_r)/(1 + sum_u)
-        market_shares = np.sum(all_probs, axis=1)/self.n_consumers
+    #     all_probs = np.exp(u_r)/(1 + sum_u)
+    #     market_shares = np.sum(all_probs, axis=1)/self.n_consumers
 
-        return market_shares, all_probs, mean_indirect_utility
+    #     return market_shares, all_probs, mean_indirect_utility
     
 
 
