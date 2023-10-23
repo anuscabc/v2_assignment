@@ -22,8 +22,8 @@ class Market_Data:
             T:int, 
             x_min:float=1.,
             x_max:float=6.,
-            c_mean:float=0.,
-            c_sd:float=0.5,
+            c_mean:float=1.2,
+            c_sd:float=0.05,
             xi_mean:float = 0., 
             xi_sd:float = 0.2,
             price_sd = 0.05, 
@@ -90,6 +90,7 @@ class Market_Data:
         self.alpha_mean = alpha_mean
         self.alpha_sd = alpha_sd
         self.alpha_0 = -np.exp(self.alpha_mean + (self.alpha_sd)**2/2)
+        self.alpha_0_sd = (np.exp(alpha_sd**2) - 1) * np.exp(2*alpha_mean + alpha_sd**2)
 
         # 2. The random coefficients on all other product characteristics: 
 
@@ -216,8 +217,6 @@ class Market_Data:
 
         # Add the product characteristics 
         return df_final
-
-
 
     # The function that you call when you print the object 
     def __str__(self) -> str:
