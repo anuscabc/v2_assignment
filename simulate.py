@@ -23,7 +23,7 @@ class Market_Data:
             x_min:float=1.,
             x_max:float=6.,
             c_mean:float=1.2,
-            c_sd:float=0.05,
+            c_sd:float=0.01,
             xi_mean:float = 0., 
             xi_sd:float = 0.2,
             price_sd = 0.05, 
@@ -59,7 +59,7 @@ class Market_Data:
         self.price_sd = price_sd
         # This is another parameter of how much the current price affects the product characteristics 
         self.gamma = gamma 
-        self.prices = np.random.lognormal(self.gamma*self.xi + self.costs,
+        self.prices = np.random.lognormal(self.gamma*self.xi + 0.5*self.costs,
                                        self.price_sd, size=(self.n_firms*self.T, 1))
 
 
@@ -95,7 +95,8 @@ class Market_Data:
         # 2. The random coefficients on all other product characteristics: 
 
         self.beta_0 = np.random.normal(2, 1, (self.n_chars, 1))
-        self.beta_sd = np.absolute(np.random.gumbel(0, 0.04, (self.n_chars, 1)))
+        # self.beta_sd = np.absolute(np.random.gumbel(0, 0.04, (self.n_chars, 1)))
+        self.beta_sd = np.zeros(((self.n_chars, 1)))
 
         # 3. Generating the random shocks for the model -> might be better that they 
         # generate in module rather than as function attribute if they do not need to write t
@@ -206,8 +207,8 @@ class Market_Data:
         # Generate the dataframe with all the information
         df_simulation = pd.DataFrame({'market_ids': time1.T[0],
                                     'firm_ids':products1.T[0],
-                                    'market_share':self.market_shares.T[0],
-                                    'price':self.prices.T[0], 
+                                    'shares':self.market_shares.T[0],
+                                    'prices':self.prices.T[0], 
                                     'cost':self.costs.T[0],
                                     'xi':self.xi.T[0]
                                     })
