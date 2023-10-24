@@ -19,15 +19,15 @@ class MarketData:
             n_chars:int,
             T:int, 
             x_min:float = 1.,
-            x_max:float = 6.,
+            x_max:float = 2.,
             c_mean:float = 1.2,
             c_sd:float = 0.01,
             xi_mean:float = 0., 
             xi_sd:float = 0.2,
             price_sd:float = 0.05, 
             gamma:float = 0.9, 
-            alpha_mean:float = 0.5, 
-            alpha_sd:float = 0.05, 
+            alpha_mean:float = -1.7, 
+            alpha_sd:float = 0.2, 
             seed:int = 100
         ):
 
@@ -76,16 +76,15 @@ class MarketData:
         # 1. The random coefficients on price: 
         self.alpha_mean = alpha_mean
         self.alpha_sd = alpha_sd
-        self.alpha_0 = -np.exp(self.alpha_mean + (self.alpha_sd)**2/2)
-        self.alpha_0_sd = (np.exp(alpha_sd**2) - 1) * np.exp(2*alpha_mean + alpha_sd**2)
 
         # 2. The random coefficients on all other product characteristics: 
-        self.beta_0 = np.random.normal(2, 1, (self.n_chars, 1))
+        self.beta_0 = np.random.normal(-3, 1, (self.n_chars, 1))
         self.beta_sd = np.absolute(np.random.gumbel(0, 0.04, (self.n_chars, 1)))
         # self.beta_sd = np.zeros(((self.n_chars, 1)))
 
         # 3. Generating the random shocks for the model
         self.v_p = np.random.normal(0, 1, (self.n_consumers*self.T, 1))
+        self.alpha_i = np.zeros((self.n_consumers*self.T, 1)) 
         self.random_coeff_price = np.zeros((self.n_consumers*self.n_firms*self.T, 1))
         self.random_coeff_car = np.zeros((self.n_consumers*self.n_firms*self.T, 1))
         self.all_random_coeff = np.zeros((self.n_consumers*self.n_firms*self.T, 1))
@@ -123,7 +122,7 @@ class MarketData:
             price_r = self.prices[t*self.n_firms : (t + 1)*self.n_firms]
             mean_indirect_utilities_period = (
                 self.produc_chars@self.beta_0 
-                + self.alpha_0*price_r 
+                + self.alpha_mean*price_r 
                 + self.xi[t*self.n_firms : (t + 1) * self.n_firms]
             )
             self.mean_indirect_utilities[t*self.n_firms:(t + 1)*self.n_firms] = mean_indirect_utilities_period
@@ -135,10 +134,11 @@ class MarketData:
         for t in range(self.T):
             price_r = self.prices[t*self.n_firms : (t + 1)*self.n_firms].reshape(1, self.n_firms)
             period_v_p = self.v_p[t*self.n_consumers : (t + 1)*self.n_consumers]
-            alpha_i_per_period = np.reshape((-(np.exp(self.alpha_mean + self.alpha_sd*period_v_p)) 
-                                             + np.exp(self.alpha_mean + (self.alpha_sd)**2/2)), 
+            alpha_i_per_period = np.reshape(self.alpha_sd*period_v_p, 
                                              (self.n_consumers, 1))
             c_times_f = self.n_consumers*self.n_firms
+            self.alpha_i[t*self.n_consumers: (t + 1)*self.n_consumers] = alpha_i_per_period 
+
             self.random_coeff_price[t*c_times_f : (t + 1)*c_times_f] = np.reshape(np.ravel(
                                         (alpha_i_per_period*price_r).T), (c_times_f, 1))
 
