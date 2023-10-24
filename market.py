@@ -80,10 +80,10 @@ class MarketData:
         # 2. The random coefficients on all other product characteristics: 
         self.beta_0 = np.random.normal(-3, 1, (self.n_chars, 1))
         self.beta_sd = np.absolute(np.random.gumbel(0, 0.04, (self.n_chars, 1)))
-        # self.beta_sd = np.zeros(((self.n_chars, 1)))
 
         # 3. Generating the random shocks for the model
         self.v_p = np.random.normal(0, 1, (self.n_consumers*self.T, 1))
+        # self.v_beta = np.random.normal(0, 1,(self.n_consumers*self.T, n_chars))
         self.alpha_i = np.zeros((self.n_consumers*self.T, 1)) 
         self.random_coeff_price = np.zeros((self.n_consumers*self.n_firms*self.T, 1))
         self.random_coeff_car = np.zeros((self.n_consumers*self.n_firms*self.T, 1))
@@ -93,6 +93,10 @@ class MarketData:
         self.gen_all_random_coeff()
         self.gen_all_time_period_mean_indirect_utilities()
         self.gen_market_share()
+
+
+
+
     
     def gen_market_share(self):
         """
@@ -126,6 +130,7 @@ class MarketData:
                 + self.xi[t*self.n_firms : (t + 1) * self.n_firms]
             )
             self.mean_indirect_utilities[t*self.n_firms:(t + 1)*self.n_firms] = mean_indirect_utilities_period
+
 
     def gen_price_random_coeff(self): 
         """
@@ -195,6 +200,9 @@ class MarketData:
         )
         df_final = df_simulation.merge(df_products, left_index=True, right_index=True)
         return df_final
+    
+    
+
 
     def __str__(self) -> str:
         return f"Market with {self.n_firms} firms and {self.n_consumers} consumers over {self.T} time periods. \n Firms sell differentiated product which have {self.n_chars} product characteristics"
