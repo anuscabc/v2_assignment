@@ -10,21 +10,21 @@ class MarketData:
 
     The data generation process can have: 
     1. no random coefficients (simple logit model)
-    2. random coefficients logit model on all coefficients
+    2. random coefficients on price
     """
     def __init__(
             self, 
             n_firms:int, 
             n_consumers:int,
-            n_chars:int,
             T:int, 
-            x_min:float = 1.,
-            x_max:float = 2.,
+            n_chars:int =1,
+            x_min:float = 4.,
+            x_max:float = 5.,
             c_mean:float = 1.2,
             c_sd:float = 0.01,
             xi_mean:float = 0., 
             xi_sd:float = 0.2,
-            price_sd:float = 0.05, 
+            price_sd:float = 0.2, 
             gamma:float = 0.9, 
             alpha_mean:float = -1.7, 
             alpha_sd:float = 0.2, 
@@ -77,27 +77,20 @@ class MarketData:
         self.alpha_mean = alpha_mean
         self.alpha_sd = alpha_sd
 
-        # 2. The random coefficients on all other product characteristics: 
-        self.beta_0 = np.random.normal(-3, 1, (self.n_chars, 1))
-        self.beta_sd = np.absolute(np.random.gumbel(0, 0.04, (self.n_chars, 1)))
+        # 2. No random coeff on product characteristics: 
+        self.beta_0 = np.random.normal(2, 1, (1, 1))
 
         # 3. Generating the random shocks for the model
         self.v_p = np.random.normal(0, 1, (self.n_consumers*self.T, 1))
-        # self.v_beta = np.random.normal(0, 1,(self.n_consumers*self.T, n_chars))
         self.alpha_i = np.zeros((self.n_consumers*self.T, 1)) 
         self.random_coeff_price = np.zeros((self.n_consumers*self.n_firms*self.T, 1))
-        self.random_coeff_car = np.zeros((self.n_consumers*self.n_firms*self.T, 1))
-        self.all_random_coeff = np.zeros((self.n_consumers*self.n_firms*self.T, 1))
 
         # Fill in the attributes that we initialized above
-        self.gen_all_random_coeff()
+        self.gen_price_random_coeff()
         self.gen_all_time_period_mean_indirect_utilities()
         self.gen_market_share()
 
 
-
-
-    
     def gen_market_share(self):
         """
         TODO
@@ -105,10 +98,10 @@ class MarketData:
         # TODO add comments
         for t in range(self.T):
             c_times_f = self.n_consumers*self.n_firms
-            coeff_per_T = self.all_random_coeff[t*c_times_f : (t + 1) * c_times_f]
+            coeff_per_T = self.random_coeff_price[t*c_times_f : (t + 1) * c_times_f]
             mean_utility_per_T = self.mean_indirect_utilities[t*self.n_firms : (t + 1)*self.n_firms] 
             repeat_u = np.repeat(mean_utility_per_T, self.n_consumers, axis=0)
-
+                                 
             u = repeat_u + coeff_per_T 
             u_r = np.reshape(u, (self.n_firms, self.n_consumers))
             sum_u = np.sum(np.exp(u_r), axis=0)
@@ -125,12 +118,11 @@ class MarketData:
         for t in range(self.T):
             price_r = self.prices[t*self.n_firms : (t + 1)*self.n_firms]
             mean_indirect_utilities_period = (
-                self.produc_chars@self.beta_0 
+                self.produc_chars*self.beta_0 
                 + self.alpha_mean*price_r 
                 + self.xi[t*self.n_firms : (t + 1) * self.n_firms]
             )
             self.mean_indirect_utilities[t*self.n_firms:(t + 1)*self.n_firms] = mean_indirect_utilities_period
-
 
     def gen_price_random_coeff(self): 
         """
@@ -143,32 +135,13 @@ class MarketData:
                                              (self.n_consumers, 1))
             c_times_f = self.n_consumers*self.n_firms
             self.alpha_i[t*self.n_consumers: (t + 1)*self.n_consumers] = alpha_i_per_period 
-
             self.random_coeff_price[t*c_times_f : (t + 1)*c_times_f] = np.reshape(np.ravel(
                                         (alpha_i_per_period*price_r).T), (c_times_f, 1))
+            
 
-    def gen_char_random_coefficient(self):
-        """
-        TODO
-        """
-        for t in range(self.T): 
-            v_p_period = self.v_p[t*self.n_consumers:(t+1)*self.n_consumers].reshape(1, self.n_consumers)
-            random_car = self.beta_sd*v_p_period
-            c_times_f = self.n_consumers*self.n_firms
-            self.random_coeff_car[t*c_times_f : (t + 1)*c_times_f] = np.reshape(
-                np.ravel(np.matmul(self.produc_chars,random_car).T), 
-                (self.n_firms*self.n_consumers, 1)
-            )
-    
-    def gen_all_random_coeff(self):
-        """
-        TODO
-        """
-        self.gen_price_random_coeff()
-        self.gen_char_random_coefficient()
-        self.all_random_coeff = self.random_coeff_price + self.random_coeff_car
-    
     def generate_simulated_data(self):
+
+
         """
         Saves dataframe with simulation data 
         # Generating a dataframe that ccan be used for estimation in Python that has the following values: 
