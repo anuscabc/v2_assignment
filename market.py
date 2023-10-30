@@ -24,10 +24,10 @@ class MarketData:
             c_sd:float = 0.01,
             xi_mean:float = 0., 
             xi_sd:float = 0.2,
-            price_sd:float = 0.2, 
+            price_sd:float = 0.02, 
             gamma:float = 0.9, 
             alpha_mean:float = -1.7, 
-            alpha_sd:float = 0.2, 
+            alpha_sd:float = 0.5, 
             seed:int = 100
         ):
 
@@ -78,7 +78,7 @@ class MarketData:
         self.alpha_sd = alpha_sd
 
         # 2. No random coeff on product characteristics: 
-        self.beta_0 = np.random.normal(2, 1, (1, 1))
+        self.beta_0 = -1.
 
         # 3. Generating the random shocks for the model
         self.v_p = np.random.normal(0, 1, (self.n_consumers*self.T, 1))
@@ -172,6 +172,7 @@ class MarketData:
              'xi':self.xi.T[0]}
         )
         df_final = df_simulation.merge(df_products, left_index=True, right_index=True)
+        df_final.to_csv('simulation_data.csv', index=False)
         return df_final
     
     
