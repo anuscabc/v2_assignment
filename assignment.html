@@ -7492,30 +7492,31 @@ a.anchor-link {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h1 id="Demand-Estimation-Exercise">Demand Estimation Exercise<a class="anchor-link" href="#Demand-Estimation-Exercise">¶</a></h1><h3 id="Part-0-:-Getting-started">Part 0 : Getting started<a class="anchor-link" href="#Part-0-:-Getting-started">¶</a></h3><p>In this assignment you will be doing guided demand estimation for heterogeneous product models. The techniques presented in this assignment are commonly used in research and for policy decisions. In this assignment we will focus on obtaining post-estimation elasticities of demand from two different models. Demand elasticites can only be obtained once we know the parameters defining the demand function. The purpose is that you understand how model misspecification leads to biased elasticities estimates and how such biases might impact policy and theoretical results. For the assignment you will use simulated data for which we exactly know the data generation process. A detailed description is provided below.</p>
+<h1 id="Demand-Estimation-Exercise">Demand Estimation Exercise<a class="anchor-link" href="#Demand-Estimation-Exercise">¶</a></h1><h3 id="Part-0-:-Getting-started">Part 0 : Getting started<a class="anchor-link" href="#Part-0-:-Getting-started">¶</a></h3><p>In this assignment, you will be doing guided demand estimation for heterogeneous product models. The techniques you will use appear often in empirical research and policy scenarios. Imagine you are a practitioner trying to estimate how responsive consumers are to changes in <em>chocolate</em> prices (elasticities of demand with respect to prices). Each firm sells a slightly different chocolate variety so you cannot assume that demand is homogenous. The most common model accounting for heterogeneous products in demand estimation was proposed by Berry (1994). This model was extensively discussed in the lecture. For the assignment, you will obtain estimates for demand elasticities using two estimation measures. Demand elasticities can only be obtained once we know the parameters defining the demand function. The purpose is that you understand how model misspecification leads to biased elasticity estimates and how such biases might impact policy and
+competition authorities decisions. You will use simulated data for which we know the data generation process (DGP) and the true value of the coefficients. A detailed description of the model is provided below.</p>
 <p><strong>(a) Model description</strong></p>
-<p>Consider a market with $N$ consumers, $J$ firms, across $T$ time periods (You can also see the time periods as geographically separated markets. This is an important assumption for heterogeneous product models, consumers can only activate within one market (Berry, 2021)). In this simplified model we assume firms are going to sell just one products, as such firms and product can be used interchangeably. The consumers have heterogeneous preferences over prices. The indirect utility of the consumers is going to be given by:</p>
+<p>Consider a market with $N$ consumers, $J$ firms, across $T$ time periods (you can also see the time periods as geographically separated markets). This is an important assumption for heterogeneous product models, consumers can only activate within one market (Berry &amp; Haile, 2020)). In this simplified model we assume firms are going to sell just one product, therefore firms and products can be used interchangeably. Consumers have heterogeneous preferences over prices. The indirect utility of the consumers is given by:</p>
 <p>$$u_{ijt} = \beta x_j + \alpha_{it}p_{jt} + \xi_{jt} + \varepsilon_{ijt}$$</p>
 <p>Where:</p>
 <ul>
-<li>$x_j$ is a  time invariant product characteristic</li>
+<li>$x_j$ is a time-invariant product characteristic</li>
 <li>$p_{jt}$ is the price of the product sold by firm $j$ in period $t$</li>
 <li>$\xi_{jt}$ are product-market specific fixed effects which are correlated with $p_{jt}$</li>
 <li>$\beta$ is the coefficient of the product characteristic and it is constant across consumers</li>
-<li>$\alpha_{it}$ is the consumer specific price coefficient defined as $\alpha_{it} =  \mu_{\alpha} + \sigma_{\alpha} \nu_{it}^{p}$, where $\nu_{it}^{p}$ are i.i.d. standard normal random variables.
--$\varepsilon_{ijt}$ is the error term following a Type 1 extreme value distribution</li>
+<li>$\alpha_{it}$ is the consumer specific price coefficient defined as $\alpha_{it} =  \mu_{\alpha} + \sigma_{\alpha} \nu_{it}^{p}$, where $\nu_{it}^{p}$ are i.i.d. standard normal random variables</li>
+<li>$\varepsilon_{ijt}$ is the error term following a type-I generalized extreme value distribution.</li>
 </ul>
-<p>Following from standard theory (ref slides) we know we can thereafter rewrite indirect utility as:</p>
+<p>Following from standard theory we can thereafter rewrite indirect utility as:</p>
 <p>$$u_{i j t}= \delta_{jt} + \sigma_{\alpha} \nu_{it}^{p}p_{jt} + \varepsilon_{ijt},$$</p>
-<p>Where $ \delta_{jt} = \beta x_j + \mu_{\alpha} p_{jt} + \xi_{jt}$</p>
-<p>Consumers purchase one unit of the good that gives them the highest utility. Each market has the same number of consumers across time, $N$. By assuming that the error term $\varepsilon_{ijt}$ follows from the type-I extreme value distribution, the probability $f_{ijt}$ that consumer $i$ buys product $j$ in market $t$ is given by the multinomial logit function:</p>
+<p>where $ \delta_{jt} = \beta x_j + \mu_{\alpha} p_{jt} + \xi_{jt}$.</p>
+<p>Each consumer purchases one unit of the good that gives them the highest utility. Each market has the same number of consumers across time, $N$. By assuming that the error term $\varepsilon_{ijt}$ follows from the type-I extreme value distribution, the probability $f_{ijt}$ that consumer $i$ buys product $j$ in market $t$ is given by the multinomial logit function:</p>
 <p>$$f_{ijt} = \frac{\exp \left(\beta x_j+\alpha_{it} p_{j t}+ \xi_{jt}\right)}{1+\sum_{k=1}^J \exp \left(\beta x_k + \alpha_{it} p_{k t} +\xi_{kt}\right)}.$$</p>
 <p>Aggregating over the individual purchasing probabilities we get the market shares:</p>
 <p>$$
     s_{jt}= \int_N f_{ijt} \text{d} \nu.
 $$</p>
-<p>The model is a simplified and adapted version of the theory from the paper of \cite{berry1994estimating}. For additional information, clarification and theory please check the reference material.</p>
-<p>The assignment makes use of simulated data. The model has been calibrated to the following coefficients. These are the coefficients that you will try to estimate in the assignment. Ultimately, you will use the coefficients to retrive own-price elasticities of demand:</p>
+<p>The model is a simplified and adapted version of the theory from the paper of Berry (1994). For additional information, clarification and theory please check the reference material.</p>
+<p>The assignment makes use of simulated data. The model has been calibrated to the following coefficients. These are the coefficients that you will try to estimate in the assignment. Ultimately, you will use the coefficients to retrieve own-price elasticities of demand:</p>
 <table>
 <thead>
 <tr>
@@ -7541,17 +7542,6 @@ $$</p>
 </div>
 </div>
 </div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p><strong>(b) Load the neccesaty requirements</strong></p>
-</div>
-</div>
-</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
@@ -7560,7 +7550,9 @@ $$</p>
 <div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span> 
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Import the following modules</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span> 
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span> 
 <span class="kn">import</span> <span class="nn">statsmodels.api</span> <span class="k">as</span> <span class="nn">sm</span>
 <span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">norm</span>
@@ -7590,7 +7582,7 @@ $$</p>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <p><strong>Exercise 1</strong></p>
-<p>Look into the data characterizing you market. Print the data. Is it realistic that an econometrician has all the information that you have in your dataset (max 100x)?</p>
+<p>Look into the data characterizing your market. Print the data. Is it realistic that an econometrician has all the information that you have in your dataset (max 100x)?</p>
 </div>
 </div>
 </div>
@@ -7603,9 +7595,7 @@ $$</p>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># 1. Load the data using pandas </span>
-<span class="c1"># Your code here </span>
-
-
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">"simulation_data.csv"</span><span class="p">)</span>
 <span class="c1"># 2. Print the data</span>
 <span class="c1"># Your code here </span>
 </pre></div>
@@ -7620,7 +7610,7 @@ $$</p>
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>*Your description here (double click to open markdown cell):</p>
+<p><span style="color:red"> *Your description here (double click to open markdown cell):  </span>.</p>
 </div>
 </div>
 </div>
@@ -7632,12 +7622,13 @@ $$</p>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <p><strong>Exercise 2</strong></p>
-<p>Create a histogram with:</p>
+<p>a) Create a histogram with:</p>
 <ol>
 <li>The distribution of prices</li>
 <li>The distribution of market shares</li>
 </ol>
-<p>You should use the columns from the generated dataframe.</p>
+<p>Describe what you see in each histogram.</p>
+<p>b) Create a summary statistics table with the data. Describe what you see.</p>
 </div>
 </div>
 </div>
@@ -7663,7 +7654,7 @@ $$</p>
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>*Your description here (double click to open markdown cell):</p>
+<p><span style="color:red">*Your description here (double click to open markdown cell): </span>.</p>
 </div>
 </div>
 </div>
@@ -7676,6 +7667,31 @@ $$</p>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Create a  shares histogram</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p><span style="color:red">*Your description here (double click to open markdown cell): </span>.</p>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Provide a descriptive summary statistics table of the data</span>
 <span class="c1"># Your code here</span>
 </pre></div>
 </div>
@@ -7689,7 +7705,7 @@ $$</p>
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>*Your description here (double click to open markdown cell):</p>
+<p><span style="color:red">*Your description here (double click to open markdown cell): </span>.</p>
 </div>
 </div>
 </div>
@@ -7700,7 +7716,7 @@ $$</p>
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="Part-2:-Simple-Logit-Estimation-(20-points)">Part 2: Simple Logit Estimation (20 points)<a class="anchor-link" href="#Part-2:-Simple-Logit-Estimation-(20-points)">¶</a></h3>
+<h3 id="Part-2:-Simple-Logit-Estimation-(40-points)">Part 2: Simple Logit Estimation (40 points)<a class="anchor-link" href="#Part-2:-Simple-Logit-Estimation-(40-points)">¶</a></h3>
 </div>
 </div>
 </div>
@@ -7712,9 +7728,9 @@ $$</p>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <p><strong>Exercise 1</strong></p>
-<p>Estimate the simple logit model disregarding consumer heterogeneity
-Trying to estimate with the logit function:
-$$ ln(s_j) - ln(s_0) =   \beta x_j + \alpha p_{jt} + \xi_{jt} $$</p>
+<p>Estimate the simple logit model disregarding consumer heterogeneity:</p>
+<p>$$ ln(s_j) - ln(s_0) =   \beta x_j + \alpha p_{jt} + \xi_{jt} $$</p>
+<p>To estimate the model you need to follow these steps:</p>
 <ol>
 <li>Calculate the outside good share $s_0$</li>
 <li>Create the dependent variable $\ln(s_{jt}) - \ln(s_{0t})$</li>
@@ -7732,12 +7748,6 @@ $$ ln(s_j) - ln(s_0) =   \beta x_j + \alpha p_{jt} + \xi_{jt} $$</p>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Your code here </span>
-
-
-
-<span class="c1">#  Use stats model for the regression</span>
-<span class="n">mod</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">OLS</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">mod</span><span class="o">.</span><span class="n">summary</span><span class="p">())</span> 
 </pre></div>
 </div>
 </div>
@@ -7762,7 +7772,21 @@ $$ ln(s_j) - ln(s_0) =   \beta x_j + \alpha p_{jt} + \xi_{jt} $$</p>
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>Your explanation here (double click to open markdown cell):</p>
+<p><span style="color:red">*Your description here (double click to open markdown cell): </span></p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p><strong>Exercise 3</strong></p>
+<p>One of the most important concerns regarding heterogeneous product demand estimation is price endogeneity. Econometricians do not observe product-specific demand shocks that might affect the estimation. Imagine that you are buying chocolate in the supermarket. One chocolate brand, Tim Choconotlonely, advertised last month that their cocoa beans are ethically sourced and their suppliers receive fair compensation for their work. People liked the advertising campaign so much that Tim Choconotlonely increased its prices. The details of the campaign are not known to the econometrician and cannot be included in the estimation.</p>
+<p>Keeping this in mind, estimate the simple model disregarding consumer heterogeneity and product fixed effects $\xi_{jt}$:</p>
+<p>$$ ln(s_jt) - ln(s_0) =   \beta x_j + \alpha p_{jt} . $$</p>
 </div>
 </div>
 </div>
@@ -7774,31 +7798,7 @@ $$ ln(s_j) - ln(s_0) =   \beta x_j + \alpha p_{jt} + \xi_{jt} $$</p>
 <div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Run the following visualization to put your results in perspective</span>
-
-<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
-
-<span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">ax</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">axes</span><span class="o">.</span><span class="n">flatten</span><span class="p">()):</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="o">-</span><span class="mf">1.</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.</span><span class="p">))[</span><span class="n">i</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s2">"true"</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"blue"</span><span class="p">)</span>
-
-    <span class="c1"># Plot (distribution of) estimated coefficient</span>
-    <span class="n">mu</span> <span class="o">=</span> <span class="n">mod</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-    <span class="n">sigma</span> <span class="o">=</span> <span class="n">mod</span><span class="o">.</span><span class="n">bse</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-    <span class="n">x1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">mu</span> <span class="o">-</span> <span class="mi">4</span><span class="o">*</span><span class="n">sigma</span><span class="p">,</span> <span class="n">mu</span> <span class="o">+</span> <span class="mi">4</span><span class="o">*</span><span class="n">sigma</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
-    <span class="n">x2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">mu</span> <span class="o">-</span> <span class="mf">1.96</span><span class="o">*</span><span class="n">sigma</span><span class="p">,</span> <span class="n">mu</span> <span class="o">+</span> <span class="mf">1.96</span><span class="o">*</span><span class="n">sigma</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
-    
-    <span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"estimated"</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"red"</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">norm</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="s2">"red"</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">x2</span><span class="p">,</span> <span class="n">norm</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">x2</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="s2">"red"</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.4</span><span class="p">)</span>
-    
-    <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">r</span><span class="s2">"$\mu_\alpha$"</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">r</span><span class="s2">"$\beta$"</span><span class="p">)</span>
-
-
-<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Your code here</span>
 </pre></div>
 </div>
 </div>
@@ -7811,8 +7811,7 @@ $$ ln(s_j) - ln(s_0) =   \beta x_j + \alpha p_{jt} + \xi_{jt} $$</p>
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p><strong>Exercise 3</strong></p>
-<p>Describe what you see in the figures? How were the figures generated? (50w)</p>
+<p><span style="color:red">*Your explanation here here (double click to open markdown cell): </span>.</p>
 </div>
 </div>
 </div>
@@ -7823,20 +7822,9 @@ $$ ln(s_j) - ln(s_0) =   \beta x_j + \alpha p_{jt} + \xi_{jt} $$</p>
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>Your description here (double click on the text to open the cell):</p>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="Part-3---Guided-Random-Coefficients-Estimation-(40-points)">Part 3 - Guided Random Coefficients Estimation (40 points)<a class="anchor-link" href="#Part-3---Guided-Random-Coefficients-Estimation-(40-points)">¶</a></h3><p>In this part of the exercise you are going to estimate a random coefficients model. Helper functions have been written for you.</p>
-<p><strong>Exercise 1</strong></p>
-<p>Set the global variables characterizing the market. You should retrive this vairbales from the dataframe. Think about whether the dataframe tells you how many consumers are in the market.</p>
+<p><strong>Exercise 4</strong></p>
+<p>One way to address price endogeneity is by using instruments. In practice, it is common to employ both demand and supply-side instruments in heterogeneous product demand estimation (for additional information on how to construct them, see Reynaert &amp; Verboven (2014)). For this assignment, you will use supply-side instruments: marginal costs (cost in the dataframe).</p>
+<p>Utilize the marginal cost as an instrument for price and report the estimated coefficients.</p>
 </div>
 </div>
 </div>
@@ -7848,9 +7836,57 @@ $$ ln(s_j) - ln(s_0) =   \beta x_j + \alpha p_{jt} + \xi_{jt} $$</p>
 <div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Your code here </span>
-
-<span class="c1"># The number of firms </span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Your code here</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p><strong>Exercise 5</strong></p>
+<p>How did the estimates change when you instrumented prices using costs? Are the observed estimates correct? Why are costs a good instrument for prices in these models?</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p><span style="color:red">*Your explanation here here (double click to open markdown cell): </span>.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h3 id="Part-3---Guided-Random-Coefficients-Estimation-(30-points)">Part 3 - Guided Random Coefficients Estimation (30 points)<a class="anchor-link" href="#Part-3---Guided-Random-Coefficients-Estimation-(30-points)">¶</a></h3><p>In this part of the exercise, you will estimate demand while accounting for the heterogeneity in consumer preferences over price. Helper functions have been written for you.</p>
+<p>In random coefficient estimation, the econometrician has to explicitly model the functional form of the market share variable. To estimate the demand coefficients, you minimize the distance between the true market shares (observed in the data) and the market shares generated by your structural model.</p>
+<p>The coefficients on price are different for each consumer and across time periods. In each time period, each consumer is hit with an independent preference shock over price $\nu_{it}^{p}$. In this assignment, these shocks are i.i.d. standard normal random variables. The econometrician does not know the realized value of the shocks or their underlying distribution. However, the shocks can be approximated by Monte Carlo simulation.</p>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># The number of firms </span>
 <span class="n">n_firms</span> <span class="o">=</span> <span class="mi">10</span>
 
 <span class="c1"># The number of consumers </span>
@@ -7870,9 +7906,8 @@ $$ ln(s_j) - ln(s_0) =   \beta x_j + \alpha p_{jt} + \xi_{jt} $$</p>
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p><strong>Step 1</strong></p>
-<p>Run the function that calcualtes simulated the random coefficients on price</p>
-<p>(Go a bit more on detail description on Monte Carlo simlation in price)</p>
+<p><strong>Step 1</strong>
+Run the function that simulates the random coefficients on price</p>
 </div>
 </div>
 </div>
@@ -7887,9 +7922,19 @@ $$ ln(s_j) - ln(s_0) =   \beta x_j + \alpha p_{jt} + \xi_{jt} $$</p>
 <div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">gen_price_random_coeff</span><span class="p">(</span><span class="n">alpha_sd</span><span class="p">,</span> <span class="n">v_p</span><span class="p">,</span> <span class="n">df</span><span class="p">):</span> 
 <span class="w">        </span>
 <span class="w">        </span><span class="sd">"""</span>
-<span class="sd">        TODO Add docstring</span>
-<span class="sd">        """</span>
+<span class="sd">        Function writing the random coefficient of the utility </span>
 
+<span class="sd">        Inputs: </span>
+
+<span class="sd">        alpha_sd: the standard deviation of the price coefficients, \sigma_{\alpha} in model</span>
+<span class="sd">        v_p: random shocks, $\nu_{it}^{p}$ in model </span>
+<span class="sd">        df (pandas.core.frame.DataFrame): dataframe </span>
+
+<span class="sd">        Outputs: </span>
+
+<span class="sd">        \sigma_{\alpha} \nu_{it}^{p}p_{jt} in the model </span>
+
+<span class="sd">        """</span>
         <span class="n">random_coefficient_prices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_firms</span><span class="o">*</span><span class="n">n_cons</span><span class="o">*</span><span class="n">T</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
         <span class="n">alpha_i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_cons</span><span class="o">*</span><span class="n">T</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
         <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
@@ -7929,8 +7974,21 @@ $$ ln(s_j) - ln(s_0) =   \beta x_j + \alpha p_{jt} + \xi_{jt} $$</p>
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">gen_estimated_utilities</span><span class="p">(</span><span class="n">alpha_mean</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">df</span><span class="p">):</span> 
 <span class="w">    </span><span class="sd">"""</span>
-<span class="sd">    TODO Add dosctring</span>
-<span class="sd">    """</span>
+
+<span class="sd">        Function retriving mean utilities </span>
+
+<span class="sd">        Inputs: </span>
+
+<span class="sd">        alpha_mean: the mean value of the price coefficients, \mu_{\alpha} in model</span>
+<span class="sd">        beta: characteristic coefficient </span>
+<span class="sd">        df: (pandas.core.frame.DataFrame) dataframe </span>
+
+<span class="sd">        Outputs: </span>
+
+<span class="sd">        \delta_{jt} in model</span>
+
+<span class="sd">     """</span>
+
     <span class="n">estimated_mean_utlities</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_firms</span><span class="o">*</span><span class="n">T</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
     <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
         <span class="n">price_r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">'prices'</span><span class="p">][</span><span class="n">t</span><span class="o">*</span><span class="n">n_firms</span> <span class="p">:</span> <span class="p">(</span><span class="n">t</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">n_firms</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">n_firms</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
@@ -7968,9 +8026,19 @@ $$ ln(s_j) - ln(s_0) =   \beta x_j + \alpha p_{jt} + \xi_{jt} $$</p>
 <div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">gen_estimated_market_share</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">v_p</span><span class="p">,</span> <span class="n">df</span><span class="p">):</span>
 
 <span class="w">    </span><span class="sd">"""</span>
-<span class="sd">    TODO</span>
-<span class="sd">    """</span>
+<span class="sd">        Function for retriving estimated market shares</span>
 
+<span class="sd">        Inputs: </span>
+
+<span class="sd">        theta: list with [standard deviation price coefficient, mean price coefficient, characteristic coefficient]</span>
+<span class="sd">        v_p: random shocks, $\nu_{it}^{p}$ in model </span>
+<span class="sd">        df: (pandas.core.frame.DataFrame) dataframe </span>
+
+<span class="sd">        Outputs: </span>
+
+<span class="sd">        s_{jt} in the model</span>
+<span class="sd">     """</span>
+    
 
     <span class="n">alpha_sd</span> <span class="o">=</span> <span class="n">theta</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">alpha_mean</span> <span class="o">=</span> <span class="n">theta</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
@@ -8021,11 +8089,14 @@ $$ ln(s_j) - ln(s_0) =   \beta x_j + \alpha p_{jt} + \xi_{jt} $$</p>
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Your code here</span>
 
+<span class="c1"># value should be calcualting the distance between estimated market shares and </span>
+<span class="c1"># generated market shares </span>
 <span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">v_p</span><span class="p">,</span> <span class="n">df</span><span class="p">):</span>
-    <span class="n">true_shares</span> <span class="o">=</span> <span class="o">...</span>
+    <span class="n">true_shares</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">'shares'</span><span class="p">])</span>
     <span class="n">estimated_market_shares</span> <span class="o">=</span> <span class="n">gen_estimated_market_share</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">v_p</span><span class="p">,</span> <span class="n">df</span><span class="p">)</span>
-    <span class="n">val</span> <span class="o">=</span> <span class="o">...</span>
-    <span class="k">return</span> <span class="n">val</span>
+
+    <span class="n">value</span> <span class="o">=</span> 
+    <span class="k">return</span> <span class="n">value</span> 
 </pre></div>
 </div>
 </div>
@@ -8040,8 +8111,7 @@ $$ ln(s_j) - ln(s_0) =   \beta x_j + \alpha p_{jt} + \xi_{jt} $$</p>
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <p><strong>Exercise 3</strong></p>
 <p>Optimize your function f using scipy.optimize.minimize.</p>
-<p>TODO: Describe why they need to do the optimization multiple times</p>
-<p>Again here more detail into the Monte Carlo simulation and approximation of the shocks</p>
+<p>theta_0 represent the starting value vector from your approximation. You can build it using the estimates from part 2.</p>
 </div>
 </div>
 </div>
@@ -8053,20 +8123,18 @@ $$ ln(s_j) - ln(s_0) =   \beta x_j + \alpha p_{jt} + \xi_{jt} $$</p>
 <div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Complete the code </span>
-
-<span class="c1"># Start theta_0 at your estimations from part 2 in the form of Theta_o = [alpha_sd_0, alpha_mean_0, beta_0]</span>
-<span class="n">theta_0</span><span class="o">=</span> <span class="p">[</span> <span class="o">...</span> <span class="p">,</span> <span class="o">...</span> <span class="p">,</span> <span class="o">...</span> <span class="p">]</span>
-
-<span class="n">N_simulation</span> <span class="o">=</span> <span class="mi">10</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Initialize the vector as alpha_sd, alpha_mean, beta</span>
+<span class="c1"># Make sure to not choose 0 as your inital values </span>
+<span class="n">theta_0</span><span class="o">=</span> <span class="p">[</span> <span class="p">,</span> <span class="p">,</span> <span class="p">]</span>
 
 
+<span class="n">N_simulation</span> <span class="o">=</span> 
 
 <span class="n">results</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N_simulation</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
-<span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N_simulation</span><span class="p">):</span>
-    <span class="c1"># Generate the Monte Carlo Shocks </span>
-    <span class="n">res</span> <span class="o">=</span> <span class="n">optimize</span><span class="o">.</span><span class="n">minimize</span><span class="p">(</span><span class="o">...</span> <span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="p">((</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mf">3.</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mf">2.</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">)))</span>
 
+<span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N_simulation</span><span class="p">):</span>
+    <span class="n">v_p_monte</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="n">n_cons</span><span class="o">*</span><span class="n">T</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">optimize</span><span class="o">.</span><span class="n">minimize</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">theta_0</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">v_p_monte</span><span class="p">,</span> <span class="n">df</span><span class="p">),</span> <span class="n">bounds</span><span class="o">=</span><span class="p">((</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mf">3.</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mf">2.</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">)))</span>
     <span class="n">results</span><span class="p">[</span><span class="n">n</span><span class="p">,:]</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">x</span>
 
 
@@ -8109,7 +8177,7 @@ $$ ln(s_j) - ln(s_0) =   \beta x_j + \alpha p_{jt} + \xi_{jt} $$</p>
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>Your discussion here (max 150w)</p>
+<p><span style="color:red">*Your explanation here (double click to open markdown cell): </span>.</p>
 </div>
 </div>
 </div>
@@ -8120,8 +8188,7 @@ $$ ln(s_j) - ln(s_0) =   \beta x_j + \alpha p_{jt} + \xi_{jt} $$</p>
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="Part-4:-Calculate-price-elasticies-(30-points)">Part 4: Calculate price elasticies (30 points)<a class="anchor-link" href="#Part-4:-Calculate-price-elasticies-(30-points)">¶</a></h3><p>Calculate average own-price elasticities with simple logit and the random coefficients estimates and discuss your results (max 150w).</p>
-<p>Use the following formula:  (TODO)</p>
+<h3 id="Part-4:-Calculate-price-elasticies-(20-points)">Part 4: Calculate price elasticies (20 points)<a class="anchor-link" href="#Part-4:-Calculate-price-elasticies-(20-points)">¶</a></h3><p>Calculate average own-price elasticities using the parameters estimated with the simple logit and the random coefficients estimates, and discuss your results (max 150 words).</p>
 </div>
 </div>
 </div>
@@ -8160,7 +8227,7 @@ $$ ln(s_j) - ln(s_0) =   \beta x_j + \alpha p_{jt} + \xi_{jt} $$</p>
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>Your discussion here (max 150w)</p>
+<p><span style="color:red">*Your explanation here (double click to open markdown cell): </span></p>
 </div>
 </div>
 </div>
@@ -8173,7 +8240,7 @@ $$ ln(s_j) - ln(s_0) =   \beta x_j + \alpha p_{jt} + \xi_{jt} $$</p>
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <h3 id="Part-5.-Bonus-Question-(not-mandatory)">Part 5. Bonus Question (not mandatory)<a class="anchor-link" href="#Part-5.-Bonus-Question-(not-mandatory)">¶</a></h3><p>Estimate the model in the more realistic case where you do not know the product-specific fixed efffects $\xi$. For this you can use the costs in the dataframe as instruments.</p>
 <p>In the <em>outer loop</em>, the GMM estimation procedure relies on the properties of the price instruments in order to retrieve the unbiased price coefficients. For this estimation, you have to use supply side instruments.</p>
-<p>Make use of the functions build for you in the guided Monte Carlo Estimation. Make use of the description offered by (Nevo, 2000)</p>
+<p>Make use of the functions build for you in the guided Monte Carlo Estimation. Make use of the description offered by (Nevo, 2000).</p>
 </div>
 </div>
 </div>
@@ -8184,9 +8251,22 @@ $$ ln(s_j) - ln(s_0) =   \beta x_j + \alpha p_{jt} + \xi_{jt} $$</p>
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="References">References<a class="anchor-link" href="#References">¶</a></h3><p>Berry, S. T., &amp; Haile, P. A. (2020). Nonparametric identification of differentiated products demand using micro data (No. w27704). National Bureau of Economic Research.</p>
+<h3 id="References">References<a class="anchor-link" href="#References">¶</a></h3><p>Berry, S. T. (1994). Estimating discrete-choice models of product differentiation. The RAND Journal of Economics, 242-262.</p>
+<p>Berry, S. T., &amp; Haile, P. A. (2020). Nonparametric identification of differentiated products demand using micro data (No. w27704). National Bureau of Economic Research.</p>
 <p>Nevo, A. (2000). A practitioner's guide to estimation of random‐coefficients logit models of demand. Journal of economics &amp; management strategy, 9(4), 513-548.
 Chicago</p>
+<p>Reynaert, M., &amp; Verboven, F. (2014). Improving the performance of random coefficients demand models: The role of optimal instruments. Journal of Econometrics, 179(1), 83-98.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p><sub><sup> This assignment was developed by Ana Popovici, 11/2023</sup></sub></p>
 </div>
 </div>
 </div>
