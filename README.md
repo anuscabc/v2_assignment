@@ -1,2 +1,2 @@
 # v2_assignment
-Assignment for TI
+This assignment is create for the MPhil TI students, taking the field course Industrial Organization
