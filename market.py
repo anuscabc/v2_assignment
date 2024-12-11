@@ -64,13 +64,12 @@ class MarketData:
         # Firm-level market characteristics
         self.market_shares = np.zeros((self.n_firms*self.T, 1))
         self.mean_indirect_utilities = np.zeros((self.n_firms*self.T, 1))
-        self.profits = np.zeros((self.n_firms*self.T, 1))
-        self.markups = np.zeros((self.n_firms*self.T, 1))
 
         # Generate the product characteristics
         self.x_min = x_min
         self.x_max = x_max
         self.produc_chars = np.random.uniform(self.x_min, self.x_max, (self.n_firms, self.n_chars))
+        self.produc_chars = np.tile(self.produc_chars, (self.T, 1))
 
         # Generate random coefficients 
         # 1. The random coefficients on price: 
@@ -78,65 +77,88 @@ class MarketData:
         self.alpha_sd = alpha_sd
 
         # 2. No random coeff on product characteristics: 
-        self.beta_0 = -1.
+        self.beta_0 = 0.3
 
         # 3. Generating the random shocks for the model
-        self.v_p = np.random.normal(0, 1, (self.n_consumers*self.T, 1))
+        self.v_p = np.random.normal(0, 1, (self.n_consumers, self.n_firms, self.T))
         self.alpha_i = np.zeros((self.n_consumers*self.T, 1)) 
         self.random_coeff_price = np.zeros((self.n_consumers*self.n_firms*self.T, 1))
 
         # Fill in the attributes that we initialized above
-        self.gen_price_random_coeff()
-        self.gen_all_time_period_mean_indirect_utilities()
-        self.gen_market_share()
+        self.market_shares_non_flat = self.gen_market_share()
+        self.market_shares = self.market_shares_non_flat.flatten()
 
 
     def gen_market_share(self):
         """
-        TODO
         """
         # TODO add comments
-        for t in range(self.T):
-            c_times_f = self.n_consumers*self.n_firms
-            coeff_per_T = self.random_coeff_price[t*c_times_f : (t + 1) * c_times_f]
-            mean_utility_per_T = self.mean_indirect_utilities[t*self.n_firms : (t + 1)*self.n_firms] 
-            repeat_u = np.repeat(mean_utility_per_T, self.n_consumers, axis=0)
-                                 
-            u = repeat_u + coeff_per_T 
-            u_r = np.reshape(u, (self.n_firms, self.n_consumers))
-            sum_u = np.sum(np.exp(u_r), axis=0)
+            # 1. Call the random coefficient function
+        random_coeff = self.gen_price_random_coeff()
 
-            all_probs = np.exp(u_r)/(1 + sum_u)
-            market_shares = np.sum(all_probs, axis=1)/self.n_consumers
+        # 2. Call the mean_utility_function
+        mean_utility = self.gen_estimated_utilities()
 
-            self.market_shares[t*self.n_firms : (t + 1)*self.n_firms] = np.reshape(market_shares, (self.n_firms, 1))
+        # 3. Get indirect utility
+        u_ijt = mean_utility + random_coeff
+
+        # 4. Get the exponential of the utility
+        exp_u_ijt = np.exp(u_ijt)
+
+        print(exp_u_ijt)
+
+        # 5. Make sum utility of products
+        sum_utility_choiceset = np.swapaxes((np.tile(np.sum(exp_u_ijt, axis=1),
+                                            (self.n_firms, 1 , 1))),
+                                            1, 0)
+        # 6. get_s_jt
+
+        denominator = 1 + sum_utility_choiceset
+        numerator = exp_u_ijt
+        s_ijt = (numerator/denominator)
+        s_jt = np.mean(s_ijt, axis = 0)
+
+        print(s_jt)
+
+        return s_jt
     
-    def gen_all_time_period_mean_indirect_utilities(self): 
+    def gen_estimated_utilities(self): 
+
         """
         TODO
         """
-        for t in range(self.T):
-            price_r = self.prices[t*self.n_firms : (t + 1)*self.n_firms]
-            mean_indirect_utilities_period = (
-                self.produc_chars*self.beta_0 
-                + self.alpha_mean*price_r 
-                + self.xi[t*self.n_firms : (t + 1) * self.n_firms]
-            )
-            self.mean_indirect_utilities[t*self.n_firms:(t + 1)*self.n_firms] = mean_indirect_utilities_period
+        # 1. Create mean utility from the data based on given formula and including xi
+    
+        mean_utility = self.beta_0*self.produc_chars + self.alpha_mean*self.prices + self.xi
+        utility_matrix = np.empty((self.n_firms, self.T))
+        mean_utility = np.reshape(mean_utility, (self.n_firms*self.T, ))
+
+        for i in range(self.n_firms):
+            utility_matrix[i, :] = mean_utility[i::self.n_firms]
+
+        mean_tile_matrix = np.tile(utility_matrix, (self.n_consumers, 1, 1))
+
+        return mean_tile_matrix
 
     def gen_price_random_coeff(self): 
         """
         TODO
         """
-        for t in range(self.T):
-            price_r = self.prices[t*self.n_firms : (t + 1)*self.n_firms].reshape(1, self.n_firms)
-            period_v_p = self.v_p[t*self.n_consumers : (t + 1)*self.n_consumers]
-            alpha_i_per_period = np.reshape(self.alpha_sd*period_v_p, 
-                                             (self.n_consumers, 1))
-            c_times_f = self.n_consumers*self.n_firms
-            self.alpha_i[t*self.n_consumers: (t + 1)*self.n_consumers] = alpha_i_per_period 
-            self.random_coeff_price[t*c_times_f : (t + 1)*c_times_f] = np.reshape(np.ravel(
-                                        (alpha_i_per_period*price_r).T), (c_times_f, 1))
+
+        random_coefficients = np.zeros(shape=(self.n_consumers, self.n_firms, self.T))
+        price = np.reshape(self.prices, (self.n_firms*self.T, ))
+        price_matrix = np.empty((self.n_firms, self.T))
+
+        for i in range(self.n_firms):
+            price_matrix[i, :] = price[i::self.n_firms]
+
+
+        price_tile_matrix = np.tile(price_matrix, (self.n_consumers, 1, 1))
+
+        random_coefficients = self.alpha_sd*self.v_p*price_tile_matrix
+
+        return random_coefficients
+
             
 
     def generate_simulated_data(self):
@@ -150,7 +172,7 @@ class MarketData:
         # Market share - s
         # Price - p 
         # Costs - c
-        # Characteristics - All the characteristics that you have generated depending on the function
+        # Characteristic - char1
         """
         
         # This is such that data nicely stored
@@ -166,7 +188,7 @@ class MarketData:
         df_simulation = pd.DataFrame(
             {'market_ids': time1.T[0],
              'firm_ids':products1.T[0],
-             'shares':self.market_shares.T[0],
+             'shares':self.market_shares,
              'prices':self.prices.T[0], 
              'cost':self.costs.T[0],
              'xi':self.xi.T[0]}
