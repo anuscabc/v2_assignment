@@ -1,2 +1,2 @@
 # v2_assignment
-Assignment for TI
+Assignment for TI Industrial Organization Course
