@@ -1,2 +1,2 @@
 # v2_assignment
-Assignment for TI Industrial Organization Course
+This assignment is designed by @Ana Popovici for TI students enrolled in the course Industrial Organization. 
